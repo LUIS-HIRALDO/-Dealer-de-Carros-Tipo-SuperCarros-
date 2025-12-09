@@ -114,6 +114,7 @@ $titulo_pagina = 'Supercar - Iniciar sesión';
         <?php endif; ?>
 
         <form method="post" autocomplete="off">
+            <!-- debug removed: no debug flag output in production -->
             <div class="mb-3">
                 <label for="usuario" class="form-label text-white">Usuario o email</label>
                 <input type="text" name="usuario" id="usuario"

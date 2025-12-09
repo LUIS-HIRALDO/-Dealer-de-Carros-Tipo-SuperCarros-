@@ -1,6 +1,13 @@
 <?php
-require_once __DIR__ . '/includes/auth.php'; 
-require_once 'config/db.php';
+// Cargar configuración (inicia sesión) y redirigir al login si no hay sesión
+require_once __DIR__ . '/config/db.php';
+
+// Si no hay sesión activa, incluimos el formulario de login directamente
+if (empty($_SESSION['usuario'])) {
+    // include en lugar de redirect para mostrar el login en la raíz sin cambiar la URL
+    require_once __DIR__ . '/login.php';
+    exit;
+}
 
 $titulo_pagina = 'Supercar - Panel de control';
 require_once 'includes/header.php';
@@ -31,7 +38,7 @@ try {
                m.nombre AS marca, mo.nombre AS modelo, e.nombre AS estatus
         FROM vehiculos v
         INNER JOIN marcas m   ON v.id_marca = m.id_marca
-        INNER INNER JOIN modelos mo ON v.id_modelo = mo.id_modelo
+        INNER JOIN modelos mo ON v.id_modelo = mo.id_modelo
         INNER JOIN estatus e  ON v.id_estatus = e.id_estatus
         ORDER BY v.id_vehiculo DESC
         LIMIT 5
