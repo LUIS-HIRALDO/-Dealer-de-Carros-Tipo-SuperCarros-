@@ -5,7 +5,7 @@ $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) {
     http_response_code(404);
     $titulo_pagina = 'Vehículo no encontrado';
-    require_once __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header_public.php';
     echo '<div class="alert alert-danger">ID de vehículo inválido.</div>';
     require_once __DIR__ . '/../includes/footer.php';
     exit;
@@ -30,7 +30,7 @@ $v = $stmt->fetch();
 if (!$v) {
     http_response_code(404);
     $titulo_pagina = 'Vehículo no encontrado';
-    require_once __DIR__ . '/../includes/header.php';
+    require_once __DIR__ . '/../includes/header_public.php';
     echo '<div class="alert alert-warning">No se encontró el vehículo solicitado.</div>';
     echo '<a href="' . (defined('BASE_URL') ? BASE_URL : '') . '/catalogo.php' . '" class="btn btn-secondary">Volver al catálogo</a>';
     require_once __DIR__ . '/../includes/footer.php';
@@ -63,7 +63,7 @@ function imagen_path($foto) {
 }
 
 $titulo_pagina = htmlspecialchars($v['marca'] . ' ' . $v['modelo']);
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/header_public.php';
 ?>
 
 <div class="row">
@@ -87,7 +87,64 @@ require_once __DIR__ . '/../includes/header.php';
             <p class="text-muted">Información del vendedor no disponible.</p>
         <?php endif; ?>
 
-        <a href="<?= defined('BASE_URL') ? BASE_URL : '' ?>/catalogo.php" class="btn btn-outline-secondary mt-3">Volver al catálogo</a>
+        <?php
+        // Si viene un return seguro (misma aplicación), usarlo para volver al catálogo y restaurar scroll
+        $return = '';
+        if (!empty($_GET['return'])) {
+            $decoded = rawurldecode($_GET['return']);
+            // Seguridad básica: sólo permitir rutas que comiencen con BASE_URL or '/'
+            $base = defined('BASE_URL') ? BASE_URL : '/supercar';
+            if (strpos($decoded, $base) === 0 || strpos($decoded, '/') === 0) {
+                $return = $decoded;
+            }
+        }
+        ?>
+                <a href="<?= $return ? htmlspecialchars($return) : (defined('BASE_URL') ? BASE_URL : '') . '/catalogo.php' ?>" class="btn btn-outline-secondary mt-3">Volver al catálogo</a>
+
+                <?php if ($v['id_estatus'] == 1): ?>
+                        <!-- Botón para abrir modal de reserva -->
+                        <button class="btn btn-success mt-3 ms-2" data-bs-toggle="modal" data-bs-target="#reserveModal">Reservar</button>
+                <?php else: ?>
+                        <button class="btn btn-secondary mt-3 ms-2" disabled>Estado: <?= htmlspecialchars($v['estatus'] ?? 'No disponible') ?></button>
+                <?php endif; ?>
+    </div>
+</div>
+
+<!-- Modal de reserva -->
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="<?= defined('BASE_URL') ? BASE_URL : '' ?>/vehiculos/reservar.php">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reserveModalLabel">Reservar: <?= htmlspecialchars($v['marca'] . ' ' . $v['modelo']) ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                    <input type="hidden" name="id_vehiculo" value="<?= (int)$v['id_vehiculo'] ?>">
+                    <div class="mb-3">
+                        <label for="res-nombre" class="form-label">Nombre</label>
+                        <input id="res-nombre" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="res-email" class="form-label">Email</label>
+                        <input id="res-email" name="email" type="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="res-telefono" class="form-label">Teléfono</label>
+                        <input id="res-telefono" name="telefono" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="res-nota" class="form-label">Mensaje (opcional)</label>
+                        <textarea id="res-nota" name="nota" rows="3" class="form-control"></textarea>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar reserva</button>
+            </div>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -10,6 +10,11 @@ if (!defined('BASE_URL')) {
     define('BASE_URL', '/supercar');
 }
 
+// Dirección de email para recibir notificaciones administrativas
+if (!defined('ADMIN_EMAIL')) {
+    define('ADMIN_EMAIL', 'ventas@supercar.local');
+}
+
 $host = 'localhost';
 $db   = 'supercar';
 $user = 'root';

@@ -40,6 +40,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item"><a class="nav-link" href="<?= $BASE_URL ?>/modelos/listar.php">Modelos</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= $BASE_URL ?>/vehiculos/listar.php">Vehículos</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= $BASE_URL ?>/vendedores/listar.php">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= $BASE_URL ?>/reservas/listar.php">Reservas</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= $BASE_URL ?>/usuarios/listar.php">Usuarios</a></li>
             </ul>
 

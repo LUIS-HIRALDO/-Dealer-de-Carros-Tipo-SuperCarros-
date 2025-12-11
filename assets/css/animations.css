@@ -1,0 +1,42 @@
+/* Animaciones y utilidades para efectos on-scroll */
+:root{
+  --anim-duration: 600ms;
+  --anim-ease: cubic-bezier(.22,.9,.35,1);
+}
+
+html{scroll-behavior:smooth}
+
+.animate {
+  opacity:0;
+  transform: translateY(14px);
+  transition: opacity var(--anim-duration) var(--anim-ease), transform var(--anim-duration) var(--anim-ease);
+  will-change: opacity, transform;
+}
+.animate.in-view {
+  opacity:1;
+  transform: translateY(0);
+}
+
+.animate.fade-in { transform: none; }
+.animate.fade-in.in-view { opacity:1; transform:none; }
+
+.animate.fade-up { transform: translateY(18px); }
+.animate.fade-up.in-view { transform: translateY(0); }
+
+.animate.scale-in { transform: scale(.98); }
+.animate.scale-in.in-view { transform: scale(1); }
+
+/* Stagger helper (will be applied inline via data-delay or CSS var) */
+.stagger { transition-delay: var(--delay, 0ms); }
+
+/* Smooth hover for cards already present, stronger shadow on hover */
+.card { transition: transform 250ms var(--anim-ease), box-shadow 250ms var(--anim-ease); }
+.card:hover { transform: translateY(-6px); box-shadow: 0 10px 25px rgba(0,0,0,.12); }
+
+/* Hero slight parallax container */
+.hero { position:relative; overflow:hidden; }
+.hero .hero-inner { transform: translateZ(0); transition: transform 200ms linear; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate, .card { transition: none !important; }
+}

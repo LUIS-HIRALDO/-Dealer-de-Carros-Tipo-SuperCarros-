@@ -2,7 +2,26 @@
 require_once __DIR__ . '/config/db.php';
 
 $titulo_pagina = 'Catálogo - Vehículos disponibles';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header_public.php';
+
+// Hero/banner público
+?>
+<div class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-6 mb-2">Encuentra tu próximo vehículo</h1>
+                <p class="lead mb-0">Explora nuestro catálogo de autos en excelente estado. Filtra por marca, categoría o precio y reserva una visita con el vendedor.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="<?= defined('BASE_URL') ? BASE_URL : '' ?>/vehiculos/crear.php" class="btn btn-outline-light d-none">Vender vehículo</a>
+                <a href="<?= defined('BASE_URL') ? BASE_URL : '' ?>/contacto.php" class="btn btn-light">Contactar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
 
 // Filtros públicos simples
 $busqueda     = trim($_GET['q'] ?? '');
@@ -135,22 +154,23 @@ function imagen_path($foto) {
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
     <?php if (!empty($vehiculos)): ?>
-        <?php foreach ($vehiculos as $v): ?>
-            <div class="col">
-                <div class="card h-100">
-                    <img src="<?= imagen_path($v['foto']) ?>" class="card-img-top" alt="<?= htmlspecialchars($v['marca'] . ' ' . $v['modelo']) ?>" style="height:200px; object-fit:cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title mb-1"><?= htmlspecialchars($v['marca'] . ' ' . $v['modelo']) ?></h5>
-                        <p class="text-muted small mb-1"><?= htmlspecialchars($v['categoria']) ?> · <?= htmlspecialchars($v['año']) ?></p>
-                        <p class="mb-2" style="flex:1;"><?= nl2br(htmlspecialchars(substr($v['descripcion'], 0, 120))) ?><?php if (strlen($v['descripcion'])>120) echo '...'; ?></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong>$<?= number_format((float)$v['precio'], 2) ?></strong>
-                            <a href="<?= defined('BASE_URL') ? BASE_URL : '' ?>/vehiculos/ver.php?id=<?= $v['id_vehiculo'] ?>" class="btn btn-sm btn-outline-primary">Ver</a>
+            <?php foreach ($vehiculos as $i => $v): ?>
+                <?php $delay = ($i % 6) * 80; ?>
+                <div class="col" data-animate="fade-up" data-delay="<?= $delay ?>">
+                    <div class="card h-100 animate fade-up stagger">
+                        <img src="<?= imagen_path($v['foto']) ?>" class="card-img-top" alt="<?= htmlspecialchars($v['marca'] . ' ' . $v['modelo']) ?>" style="height:200px; object-fit:cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-1"><?= htmlspecialchars($v['marca'] . ' ' . $v['modelo']) ?></h5>
+                            <p class="text-muted small mb-1"><?= htmlspecialchars($v['categoria']) ?> · <?= htmlspecialchars($v['año']) ?></p>
+                            <p class="mb-2" style="flex:1;"><?= nl2br(htmlspecialchars(substr($v['descripcion'], 0, 120))) ?><?php if (strlen($v['descripcion'])>120) echo '...'; ?></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>$<?= number_format((float)$v['precio'], 2) ?></strong>
+                                <a href="<?= defined('BASE_URL') ? BASE_URL : '' ?>/vehiculos/ver.php?id=<?= $v['id_vehiculo'] ?>" class="btn btn-sm btn-outline-primary view-link">Ver</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
     <?php else: ?>
         <div class="col-12">
             <div class="alert alert-info">No se encontraron vehículos con los filtros seleccionados.</div>
